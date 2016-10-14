@@ -1,5 +1,6 @@
-# extract long-lat coordinates from kmz
-# worht checking this as well:
+# extract long-lat coordinates from a bunch of kmz files
+# first unzips the kmz-s then reads coordinates
+# worth checking this as well:
 # https://gist.github.com/holstius/6631918
 
 library(maptools )
