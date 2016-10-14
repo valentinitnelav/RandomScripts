@@ -28,8 +28,3 @@ LonLat <- t(LonLat)
 
 # write data to file
 write.csv(LonLat, "Data/kmz-files/LonLat_kmz.csv", col.names = TRUE)
-
-# this is an example of one read of one kmz file
-getKMLcoordinates(unzip(zipfile="Data/kmz-files/Albulapass.kmz",
-                        exdir="Data/kmz-files/KML"), 
-                  ignoreAltitude=TRUE)[[1]]
