@@ -1,3 +1,5 @@
+# Converting coordinates from DMS format to decimal
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Inspired from http://stackoverflow.com/questions/14404596/converting-geo-coordinates-from-degree-to-decimal
 dg2dec <- function(varb, D = '°', M = '.', S = '"') {
   # use paste0("[", D, M, S, "]") to build regex [] pattern
@@ -7,7 +9,7 @@ dg2dec <- function(varb, D = '°', M = '.', S = '"') {
   return(DMS[1, ] + DMS[2, ]/60 + DMS[3, ]/3600)
 }
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example
 x <- read.table(text="lat     long        latN
                 45°12.123' 19º05.315''  45°12.123'N
