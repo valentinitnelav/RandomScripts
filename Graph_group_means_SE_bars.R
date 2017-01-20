@@ -18,7 +18,8 @@ DT.means <- DT[, .(AVG=mean(r.t.),
                    SE=sd(r.t.)/sqrt(.N)), 
                by=.(woodyComb, DeerComb)]
 # Set the grouping column as factor with given order of levels
-# this will be later important in constructing the graph (the order will appear in legend)
+# this can be important for the order of labels in legend
+# however, this can be adjusted as well with the breaks() argument in scale_*() functions within ggplot()
 DT.means[, DeerComb.fct := factor(DeerComb, c("none","low","high"))]
 
 # ========== Plot ========== #
