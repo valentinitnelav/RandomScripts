@@ -6,11 +6,11 @@ library(ggplot2)
 # ========================================================================
 # ================ Read data from .csv file
 # ========================================================================
-DB <- read.csv("Graphs/BothDeerAndBrushForGraphing.csv", header=TRUE)
+DB <- read.csv("BothDeerAndBrushForGraphing.csv", header=TRUE)
 # str(DB)
-Dl.Bn <- read.csv("Graphs/NoBrushLowDeerForGraphing.csv", header=TRUE)
+Dl.Bn <- read.csv("NoBrushLowDeerForGraphing.csv", header=TRUE)
 # str(Dl.Bn)
-Dn.Bh <- read.csv("Graphs/NoDeerHighBrushForGraphing.csv", header=TRUE)
+Dn.Bh <- read.csv("NoDeerHighBrushForGraphing.csv", header=TRUE)
 # str(Dn.Bh)
 
 # ========================================================================
@@ -35,7 +35,7 @@ Dn.Bh.CIs <- summary.CIs(Dn.Bh, scenario="No deer, high brush")
 # rbind the summary stats in one long data frame
 my.data <- rbind(DB.CIs, Dl.Bn.CIs, Dn.Bh.CIs)
 
-write.csv(my.data, "Graphs/Summary_stats_all_scenarios.csv", row.names = FALSE)
+write.csv(my.data, "Summary_stats_all_scenarios.csv", row.names = FALSE)
 
 # set the order of levels in the factor column "scenario"
 # this can be important for the order of labels in legend
@@ -96,9 +96,9 @@ ggplot(data = my.data, aes(x=time, y=means, group=scenario)) +
           legend.position = c(1,1))
 
 # save as pdf
-ggsave("Graphs/Forecast - CI ribbons, bw.pdf", width=5, height=4, units="in")
+ggsave("Forecast - CI ribbons, bw.pdf", width=5, height=4, units="in")
 # save as png
-ggsave("Graphs/Forecast - CI ribbons, bw.png", width=5, height=4, units="in", dpi=600)
+ggsave("Forecast - CI ribbons, bw.png", width=5, height=4, units="in", dpi=600)
 
 # ========================================================================
 # ================ Plot - with confidence bands (color)
@@ -152,9 +152,9 @@ ggplot(data = my.data, aes(x=time, y=means, group=scenario)) +
           legend.position = c(1,1))
 
 # save as pdf
-ggsave("Graphs/Forecast - CI ribbons, color.pdf", width=5, height=4, units="in")
+ggsave("Forecast - CI ribbons, color.pdf", width=5, height=4, units="in")
 # save as png
-ggsave("Graphs/Forecast - CI ribbons, color.png", width=5, height=4, units="in", dpi=600)
+ggsave("Forecast - CI ribbons, color.png", width=5, height=4, units="in", dpi=600)
 
 # ========================================================================
 # ================ Plot - with confidence lines (bw)
@@ -207,9 +207,9 @@ ggplot(data = my.data) +
 
 
 # save as pdf
-ggsave("Graphs/Forecast - CI lines, bw.pdf", width=5, height=4, units="in")
+ggsave("Forecast - CI lines, bw.pdf", width=5, height=4, units="in")
 # save as png
-ggsave("Graphs/Forecast - CI lines, bw.png", width=5, height=4, units="in", dpi=600)
+ggsave("Forecast - CI lines, bw.png", width=5, height=4, units="in", dpi=600)
 
 # ========================================================================
 # ================ Plot - with confidence lines (color)
@@ -270,9 +270,9 @@ ggplot(data = my.data) +
 
 
 # save as pdf
-ggsave("Graphs/Forecast - CI lines, color.pdf", width=5, height=4, units="in")
+ggsave("Forecast - CI lines, color.pdf", width=5, height=4, units="in")
 # save as png
-ggsave("Graphs/Forecast - CI lines, color.png", width=5, height=4, units="in", dpi=600)
+ggsave("Forecast - CI lines, color.png", width=5, height=4, units="in", dpi=600)
 
 
 # ========================================================================
@@ -287,20 +287,25 @@ ggplot(data = my.data) +
     geom_line(aes(x=time, y=upperCI, color=scenario), linetype="dotted", lwd=.5) +
     
     # set color manually
+    # NOTE: breaks and values need to be identical with the values in the data
+    # use labels to labes those values as desired (order matters)
     scale_color_manual(name = 'Scenario',
                        breaks = c("Low deer, no brush", 
                                   "No deer, high brush", 
                                   "Deer & brush"),
                        values = c("Low deer, no brush"  = "#7570b3",
                                   "No deer, high brush" = "#1b9e77",
-                                  "Deer & brush"        = "#d95f02")) +
+                                  "Deer & brush"        = "#d95f02"),
+                       labels = c("No&LowD x No&LowW",
+                                  "LowD x HighW",
+                                  "HighD x HighW")) +
     # to set the order as desired one needs to mention "breaks" in scale_linetype_manual()
     # using a factor would not work as expected!
     
     # Final adjustments:
     # set axis labels
     labs(x = "Years", 
-         y = "Population growth") +
+         y = "Population Size") +
     theme_bw() + # eliminate default backgound
     theme(panel.grid.major = element_blank(), # eliminate major grids
           panel.grid.minor = element_blank(), # eliminate minor grids
@@ -321,9 +326,9 @@ ggplot(data = my.data) +
           # Note that the numeric position in legend.position below is relative to the entire area, 
           # including titles and labels, not just the plotting area
           legend.justification = c(1,1),
-          legend.position = c(1,1))
+          legend.position = c(1,0.95))
 
 # save as pdf
-ggsave("Graphs/Forecast - CI lines, color 2.pdf", width=5, height=4, units="in")
+ggsave("Forecast - CI lines, color 2.pdf", width=5, height=4, units="in")
 # save as png
-ggsave("Graphs/Forecast - CI lines, color 2.png", width=5, height=4, units="in", dpi=600)
+ggsave("Forecast - CI lines, color 2.png", width=5, height=4, units="in", dpi=600)
