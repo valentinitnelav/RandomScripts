@@ -287,8 +287,8 @@ ggplot(data = my.data) +
     geom_line(aes(x=time, y=upperCI, color=scenario), linetype="dotted", lwd=.5) +
     
     # set color manually
-    # NOTE: breaks and values need to be identical with the values in the data
-    # use labels to labes those values as desired (order matters)
+    # NOTE: "breaks" and "values" arguments need to be identical with the values in the data
+    # use "labels" argument to label those values as desired (order matters)
     scale_color_manual(name = 'Scenario',
                        breaks = c("Low deer, no brush", 
                                   "No deer, high brush", 
