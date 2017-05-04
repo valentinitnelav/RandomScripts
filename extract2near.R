@@ -33,9 +33,9 @@ extract2near <- function(rst, XY, my.buffer){
     
     # If there are NA cell values, then search for nearest non-Na cell value within buffer's range
     NA.idx <- is.na(ext[,2])
-    if ( all(NA.idx) ) stop("All points returned NA! – most probably the given raster and points have different CRS")
+    if ( all(NA.idx) ) stop("All points returned NA! \n - most probably the given raster and points have different CRS")
     if ( any(NA.idx) ) {
-        packageStartupMessage(sum(NA.idx), " points outside raster coverage encountered - applying buffer extraction...")
+        packageStartupMessage(sum(NA.idx), " points outside raster coverage encountered \n - applying buffer extraction ...")
         # get records where the extraction above returned NA-s
         ext.NA <- ext[NA.idx,]
         # get corresponding point coordinates from XY
