@@ -24,14 +24,19 @@ extract2near <- function(rst, XY, my.buffer){
     if (!require("raster", quietly = TRUE)) 
         stop("package {raster} required")
     
+    # Inform about the CRS of the raster
+    message("Note that CRS of given raster is: \n", rst@crs, "\n")
+    
     # Extract cell value & ID at given XY point
     ext <- raster::extract(x = rst, y = XY, cellnumbers = TRUE, method = 'simple')
     
     # If there are NA cell values, then search for nearest non-Na cell value within buffer's range
-    if ( any(is.na(ext[,2])) ) {
+    NA.idx <- is.na(ext[,2])
+    if ( all(NA.idx) ) stop("All points returned NA! – most probably the given raster and points have different CRS")
+    if ( any(NA.idx) ) {
+        packageStartupMessage(sum(NA.idx), " points outside raster coverage encountered - applying buffer extraction...")
         # get records where the extraction above returned NA-s
-        NA.idx <- is.na(ext[,2]) # get indices
-        ext.NA <- ext[NA.idx,]   # get records
+        ext.NA <- ext[NA.idx,]
         # get corresponding point coordinates from XY
         XY.NA <- XY[NA.idx,]
         
@@ -76,8 +81,11 @@ extract2near <- function(rst, XY, my.buffer){
         }
         
         # replace NA cell values from first extraction with nearest neighbor cell values
-        ext[is.na(ext[,2]),2] <- neighbors
-    } # end of big IF
+        ext[NA.idx, 2] <- neighbors
+        
+        packageStartupMessage("...buffer extraction completed!")
+    } else message("All points were inside raster coverage – extracting as usual, NO buffer extraction needed")
+    # end of big IF
     
     # Bind point ID-s with cell ID-s, cell values and raster values name (recycled)
     ext <- data.frame(1:length(ext[,1]), ext, names(rst))
