@@ -1,4 +1,4 @@
-extract2near <- function(rst, XY, my.buffer){
+extract2near <- function(rst, XY, my.buffer, simplified = TRUE){
     # ----------------------------------------
     # [Note: this is wok in progress ! use with care !]
     # Function to extract the closest valid cell values from raster.
@@ -6,14 +6,20 @@ extract2near <- function(rst, XY, my.buffer){
     # it searches for the closest non-NA cell value within given buffer (typically meters).
     # All other points returned by the usual raster::extract() are kept as such.
     # ___ Arguments
-    # rst       - raster object
-    # XY        - data.table with two columns: first column=longitude; second column=latitude
-    # my.buffer - same as in raster::extract(); "The radius of a buffer around each point from which to extract cell values. [...]
-    #             If the data are not projected (latitude/longitude), the unit should be meters. 
-    #             Otherwise it should be in map-units (typically also meters)".
-    #             buffer needs to be at least the raster's resolution (one cell)
+    # rst        - raster object
+    # XY         - data.table with two columns: first column=longitude; second column=latitude
+    # my.buffer  - same as in raster::extract(); "The radius of a buffer around each point from which to extract cell values. [...]
+    #              If the data are not projected (latitude/longitude), the unit should be meters. 
+    #              Otherwise it should be in map-units (typically also meters)".
+    #              buffer needs to be at least the raster's resolution (one cell)
+    # simplified - Logical argument. TRUE means that the result is a data.table with only one column - the extracted raster values.
+    #              If FALSE, then 5 extra columns are added: 
+    #               the coordinates (2 columns), 
+    #               the ID of the raster cells where the points fall, 
+    #               the raster cell values and 
+    #               a column that indicates for each point if a buffer was used (NA means NO, 1 means YES)
     # ___ Returns
-    # data.frame object with point ID-s, cell ID-s, cell values and raster values name (recycled)
+    # data.table object (check "simplified" argument above)
     # ----------------------------------------
     start.time <- Sys.time()
     
@@ -27,16 +33,16 @@ extract2near <- function(rst, XY, my.buffer){
     
     # Inform about the CRS of the raster
     message("Please always check if the raster and the points have the same CRS \n",
-            "The CRS of the given raster is: \n", rst@crs)
+            "The CRS of the given raster is: \n", rst@crs, "\n")
     
     # Extract cell value & ID at given XY point
-    ext <- raster::extract(x = rst, y = XY, cellnumbers = TRUE, method = 'simple')
+    ext <- data.table(raster::extract(x = rst, y = XY, cellnumbers = TRUE, method = 'simple'))
     
     # If there are NA cell values, then search for nearest non-Na cell value within buffer's range
-    NA.idx <- is.na(ext[,2])
+    NA.idx <- is.na(ext[[2]])
     if ( all(NA.idx) ) stop("All points returned NA! \n - most probably the given raster and points have different CRS")
     if ( any(NA.idx) ) {
-        packageStartupMessage("\n", sum(NA.idx), " points outside raster coverage encountered \n - applying buffer extraction ...")
+        packageStartupMessage(sum(NA.idx), " points outside raster coverage encountered \n - applying buffer extraction ...")
         # get records where the extraction above returned NA-s
         ext.NA <- ext[NA.idx,]
         # get corresponding point coordinates from XY
@@ -83,17 +89,22 @@ extract2near <- function(rst, XY, my.buffer){
         }
         
         # replace NA cell values from first extraction with nearest neighbor cell values
-        ext[NA.idx, 2] <- neighbors
+        ext[NA.idx, 2 := neighbors]
         
         packageStartupMessage("...buffer extraction completed!")
     } else message("All points were inside raster coverage – extracting as usual, NO buffer extraction needed")
     # end of big IF
     
-    # Bind point ID-s with cell ID-s, cell values and raster values name (recycled)
-    ext <- data.frame(1:length(ext[,1]), ext, names(rst))
-    colnames(ext) <- c("point.ID", "cell.ID", "value", "rst.name")
-    message("\n Elapsed/CPU time: ", format(round(Sys.time() - start.time, digits = 2)))
-    return(ext)
+    # Return only extracted raster values or, optionally, add some extra columns
+    if ( simplified ) {
+        message("\n Elapsed/CPU time: ", format(round(Sys.time() - start.time, digits = 2)))
+        return(ext[,2])
+    } else {
+        # Adds column that indicates for each point if a buffer was used. NA means NO, 1 means YES
+        ext[NA.idx, buf := 1L]
+        message("\n Elapsed/CPU time: ", format(round(Sys.time() - start.time, digits = 2)))
+        return(cbind(XY, ext))
+    }
 }
 
 # If you change the buffer size, then be aware of the followings:                                              
