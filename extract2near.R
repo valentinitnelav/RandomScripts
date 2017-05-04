@@ -32,10 +32,10 @@ extract2near <- function(rst, XY, my.buffer){
         # get records where the extraction above returned NA-s
         NA.idx <- is.na(ext[,2]) # get indices
         ext.NA <- ext[NA.idx,]   # get records
-        # get corresponding point cordinates from XY
+        # get corresponding point coordinates from XY
         XY.NA <- XY[NA.idx,]
         
-        # extract now a buffer of cells arround these "NA" points
+        # extract now a buffer of cells around these "NA" points
         # will get a list of matrices with raster cell values and cell IDs around each "NA" point
         # NOTE: buffer extraction (line below) is the most time consuming operation in all this process
         ext.bf <- raster::extract(x = rst, y = XY.NA, cellnumbers = TRUE, buffer = my.buffer, method = 'simple')
@@ -68,7 +68,7 @@ extract2near <- function(rst, XY, my.buffer){
             # avoid cases when some buffers are empty (check if buffer matrix has no rows)
             # (it happens when buffer radius is not big enough and can't find any non-NA cell value)
             if (dim(my.buffer)[1] != 0) {
-                # use function nn2 {RANN} to find nearest neighbour (and corresponding distance)
+                # use function nn2 {RANN} to find nearest neighbor (and corresponding distance)
                 NN <- RANN::nn2(data = my.buffer[,1:2], query = matrix(XY.NA[i,], ncol=2), k = 1)
                 # get value of nearest neighbor cell
                 neighbors[i] <- my.buffer[NN$nn.idx,4]
