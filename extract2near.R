@@ -17,11 +17,11 @@ extract2near <- function(rst, XY, my.buffer){
     # ----------------------------------------
     
     # Do some library checking
-    if (!requireNamespace("RANN", quietly = TRUE)) 
+    if (!require("RANN", quietly = TRUE)) 
         stop("package {RANN} required")
-    if (!requireNamespace("data.table", quietly = TRUE)) 
+    if (!require("data.table", quietly = TRUE)) 
         stop("package {data.table} required")
-    if (!requireNamespace("raster", quietly = TRUE)) 
+    if (!require("raster", quietly = TRUE)) 
         stop("package {raster} required")
     
     # Extract cell value & ID at given XY point
