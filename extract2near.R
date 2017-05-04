@@ -25,7 +25,7 @@ extract2near <- function(rst, XY, my.buffer){
         stop("package {raster} required")
     
     # Extract cell value & ID at given XY point
-    ext <- extract(x = rst, y = XY, cellnumbers = TRUE, method = 'simple')
+    ext <- raster::extract(x = rst, y = XY, cellnumbers = TRUE, method = 'simple')
     
     # If there are NA cell values, then search for nearest non-Na cell value within buffer's range
     if ( any(is.na(ext[,2])) ) {
@@ -38,7 +38,7 @@ extract2near <- function(rst, XY, my.buffer){
         # extract now a buffer of cells arround these "NA" points
         # will get a list of matrices with raster cell values and cell IDs around each "NA" point
         # NOTE: buffer extraction (line below) is the most time consuming operation in all this process
-        ext.bf <- extract(x = rst, y = XY.NA, cellnumbers = TRUE, buffer = my.buffer, method = 'simple')
+        ext.bf <- raster::extract(x = rst, y = XY.NA, cellnumbers = TRUE, buffer = my.buffer, method = 'simple')
         
         # some of these neighboring cells might have as well NA values, therefore,
         # get coordinates of the centers of raster cells only for non-NA cells in each buffer (matrix)
@@ -50,7 +50,7 @@ extract2near <- function(rst, XY, my.buffer){
                                       # https://cran.r-project.org/doc/FAQ/R-FAQ.html#Why-do-my-matrices-lose-dimensions_003f 
                                       m  <- m[!is.na(m[,2]),, drop = FALSE]
                                       # get coordinates of the center of each raster cell
-                                      xy <- xyFromCell(object = rst, cell = m[,1])
+                                      xy <- raster::xyFromCell(object = rst, cell = m[,1])
                                       # bind the cleaned matrix "m" with the matrix of coordinates "xy"
                                       cbind(xy,m)} )
         
@@ -69,7 +69,7 @@ extract2near <- function(rst, XY, my.buffer){
             # (it happens when buffer radius is not big enough and can't find any non-NA cell value)
             if (dim(my.buffer)[1] != 0) {
                 # use function nn2 {RANN} to find nearest neighbour (and corresponding distance)
-                NN <- nn2(data = my.buffer[,1:2], query = matrix(XY.NA[i,], ncol=2), k = 1)
+                NN <- RANN::nn2(data = my.buffer[,1:2], query = matrix(XY.NA[i,], ncol=2), k = 1)
                 # get value of nearest neighbor cell
                 neighbors[i] <- my.buffer[NN$nn.idx,4]
             }
