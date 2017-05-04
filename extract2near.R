@@ -25,7 +25,8 @@ extract2near <- function(rst, XY, my.buffer){
         stop("package {raster} required")
     
     # Inform about the CRS of the raster
-    message("Note that CRS of given raster is: \n", rst@crs, "\n")
+    message("Please always check if the raster and the points have the same CRS \n",
+            "The CRS of the given raster is: \n", rst@crs)
     
     # Extract cell value & ID at given XY point
     ext <- raster::extract(x = rst, y = XY, cellnumbers = TRUE, method = 'simple')
