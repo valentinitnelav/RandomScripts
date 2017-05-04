@@ -15,6 +15,7 @@ extract2near <- function(rst, XY, my.buffer){
     # ___ Returns
     # data.frame object with point ID-s, cell ID-s, cell values and raster values name (recycled)
     # ----------------------------------------
+    start.time <- Sys.time()
     
     # Do some library checking
     if (!require("RANN", quietly = TRUE)) 
@@ -35,7 +36,7 @@ extract2near <- function(rst, XY, my.buffer){
     NA.idx <- is.na(ext[,2])
     if ( all(NA.idx) ) stop("All points returned NA! \n - most probably the given raster and points have different CRS")
     if ( any(NA.idx) ) {
-        packageStartupMessage(sum(NA.idx), " points outside raster coverage encountered \n - applying buffer extraction ...")
+        packageStartupMessage("\n", sum(NA.idx), " points outside raster coverage encountered \n - applying buffer extraction ...")
         # get records where the extraction above returned NA-s
         ext.NA <- ext[NA.idx,]
         # get corresponding point coordinates from XY
@@ -91,6 +92,7 @@ extract2near <- function(rst, XY, my.buffer){
     # Bind point ID-s with cell ID-s, cell values and raster values name (recycled)
     ext <- data.frame(1:length(ext[,1]), ext, names(rst))
     colnames(ext) <- c("point.ID", "cell.ID", "value", "rst.name")
+    message("\n Elapsed/CPU time: ", format(Sys.time() - start.time))
     return(ext)
 }
 
