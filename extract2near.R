@@ -1,16 +1,16 @@
 extract2near <- function(rst, XY, my.buffer){
     # ----------------------------------------
-    # This is wok in progress ! use with care !
+    # [Note: this is wok in progress ! use with care !]
     # Function to extract the closest valid cell values from raster.
-    # For all points that the usual raster::extract() returns NA,
-    # it searches for the closest non-NA cell value within given buffer (typically meters)
+    # Specifically, for all points that the usual raster::extract() returns NA,
+    # it searches for the closest non-NA cell value within given buffer (typically meters).
     # All other points returned by the usual raster::extract() are kept as such.
     # ___ Arguments
     # rst       - raster object
     # XY        - data.table with two columns: first column=longitude; second column=latitude
-    # my.buffer - same as in raster::extract(); The radius of a buffer around each point from which to extract cell values;
+    # my.buffer - same as in raster::extract(); "The radius of a buffer around each point from which to extract cell values. [...]
     #             If the data are not projected (latitude/longitude), the unit should be meters. 
-    #             Otherwise it should be in map-units (typically also meters).
+    #             Otherwise it should be in map-units (typically also meters)".
     #             buffer needs to be at least the raster's resolution (one cell)
     # ___ Returns
     # data.frame object with point ID-s with cell ID-s, cell values and raster values name (recycled)
@@ -24,10 +24,10 @@ extract2near <- function(rst, XY, my.buffer){
     if (!requireNamespace("raster", quietly = TRUE)) 
         stop("package {raster} required")
     
-    # extract cell value & ID at given XY point
+    # Extract cell value & ID at given XY point
     ext <- extract(x = rst, y = XY, cellnumbers = TRUE, method = 'simple')
     
-    # if there are NA cell values, then search for nearest non-Na cell value within buffer's range
+    # If there are NA cell values, then search for nearest non-Na cell value within buffer's range
     if ( any(is.na(ext[,2])) ) {
         # get records where the extraction above returned NA-s
         NA.idx <- is.na(ext[,2]) # get indices
@@ -79,7 +79,7 @@ extract2near <- function(rst, XY, my.buffer){
         ext[is.na(ext[,2]),2] <- neighbors
     } # end of big IF
     
-    # bind point ID-s with cell ID-s, cell values and raster values name (recycled)
+    # Bind point ID-s with cell ID-s, cell values and raster values name (recycled)
     ext <- data.frame(1:length(ext[,1]), ext, names(rst))
     colnames(ext) <- c("point.ID", "cell.ID", "value", "rst.name")
     return(ext)
