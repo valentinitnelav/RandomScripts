@@ -92,7 +92,7 @@ extract2near <- function(rst, XY, my.buffer){
     # Bind point ID-s with cell ID-s, cell values and raster values name (recycled)
     ext <- data.frame(1:length(ext[,1]), ext, names(rst))
     colnames(ext) <- c("point.ID", "cell.ID", "value", "rst.name")
-    message("\n Elapsed/CPU time: ", format(Sys.time() - start.time))
+    message("\n Elapsed/CPU time: ", format(round(Sys.time() - start.time, digits = 2)))
     return(ext)
 }
 
