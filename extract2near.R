@@ -1,6 +1,6 @@
 extract2near <- function(rst, XY, my.buffer, simplified = TRUE){
     # ----------------------------------------
-    # [Note: this is wok in progress ! use with care !]
+    # [Note: wok in progress...]
     # Function to extract the closest valid cell values from raster.
     # Specifically, for all points that the usual raster::extract() returns NA,
     # it searches for the closest non-NA cell value within given buffer (typically meters).
