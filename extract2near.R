@@ -1,6 +1,6 @@
 extract2near <- function(rst, XY, my.buffer, simplified = TRUE){
     # ----------------------------------------
-    # [Note: this is wok in progress ! use with care !]
+    # [Note: wok in progress...]
     # Function to extract the closest valid cell values from raster.
     # Specifically, for all points that the usual raster::extract() returns NA,
     # it searches for the closest non-NA cell value within given buffer (typically meters).
@@ -24,12 +24,12 @@ extract2near <- function(rst, XY, my.buffer, simplified = TRUE){
     start.time <- Sys.time()
     
     # Do some library checking
-    if (!require("RANN", quietly = TRUE)) 
-        stop("package {RANN} required")
-    if (!require("data.table", quietly = TRUE)) 
-        stop("package {data.table} required")
-    if (!require("raster", quietly = TRUE)) 
-        stop("package {raster} required")
+    if (!requireNamespace("RANN", quietly = TRUE)) 
+        stop("Please install package {RANN}")
+    if (!requireNamespace("data.table", quietly = TRUE)) 
+        stop("Please install package {data.table}")
+    if (!requireNamespace("raster", quietly = TRUE)) 
+        stop("Please install package {raster}")
     
     # Inform about the CRS of the raster
     message("Please always check if the raster and the points have the same CRS \n",
