@@ -92,7 +92,7 @@ extract2near <- function(rst, XY, my.buffer, simplified = TRUE){
         ext[NA.idx, 2 := neighbors]
         
         packageStartupMessage("...buffer extraction completed!")
-    } else message("All points were inside raster coverage – extracting as usual, NO buffer extraction needed")
+    } else message("All points were inside raster coverage - extracting as usual, NO buffer extraction needed")
     # end of big IF
     
     # Return only extracted raster values or, optionally, add some extra columns
