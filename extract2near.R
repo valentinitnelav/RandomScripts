@@ -59,6 +59,11 @@ extract2near <- function(rst,
         # NOTE: buffer extraction (line below) is the most time consuming operation in all this process
         ext.bf <- raster::extract(x = rst, y = XY.NA, cellnumbers = TRUE, buffer = my.buffer, method = 'simple')
         
+        # For speeding up, one idea would be to not process the entire buffer extraction if all neighbors return NA.
+        # but need to take care of the return structure
+        # is.bf.NA <- sapply(ext.bf, function(X) all(is.na(X[,2])))
+        # if (all(is.bf.NA))
+        
         # some of these neighboring cells might have as well NA values, therefore,
         # get coordinates of the centers of raster cells only for non-NA cells in each buffer (matrix)
         ext.bf.noNA.XY <- lapply( ext.bf, 
@@ -95,7 +100,8 @@ extract2near <- function(rst,
         }
         
         # replace NA cell values from first extraction with nearest neighbor cell values
-        ext[NA.idx, 2 := neighbors]
+        # If all neighbors are still NA, then no need to overwrite with NA (as NA is already in place in 2nd column of ext)
+        if (!all(is.na(neighbors))) ext[NA.idx, 2 := neighbors]
         
         packageStartupMessage("...buffer extraction completed!")
     } else message("All points were inside raster coverage - extracting as usual, NO buffer extraction needed")
