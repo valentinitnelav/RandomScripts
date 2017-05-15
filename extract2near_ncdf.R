@@ -2,7 +2,7 @@ extract2near_ncdf <- function(ncdf.path,
                               vars, 
                               XYT, 
                               my.buffer, 
-                              ncdf.crs   = NA)
+                              ncdf.crs = NA)
 {
     # -----------------------------------------------------------------------------------------------------------------------
     # [Note: wok in progress...]
@@ -159,5 +159,5 @@ extract2near_ncdf <- function(ncdf.path,
                       by = c("X.lon", "Y.lat", "T.idx"), 
                       all.x = TRUE, 
                       sort  = FALSE)
-    retunr(extr.res)
+    return(extr.res)
 }
